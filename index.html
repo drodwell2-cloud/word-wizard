@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word Wizard 📚</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sky: #29B6F6;
+  --sun: #FFD54F;
+  --grass: #66BB6A;
+  --purple: #AB47BC;
+  --coral: #FF7043;
+  --navy: #1A237E;
+  --indigo: #283593;
+  --card: #FFFDE7;
+  --white: #ffffff;
+  --shadow: 0 4px 20px rgba(0,0,0,0.10);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.16);
+  --radius: 18px;
+  --warn: #F57C00;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;background:linear-gradient(145deg,#e3f2fd 0%,#f3e5f5 45%,#fff8e1 100%);min-height:100vh;color:#2c2c2c;}
+
+/* HEADER */
+header{background:var(--navy);color:white;padding:12px 22px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 16px rgba(0,0,0,0.28);position:sticky;top:0;z-index:100;}
+header h1{font-family:'Fredoka One';font-size:1.7rem;letter-spacing:.5px;}
+.hdr-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.xp-wrap{display:flex;align-items:center;gap:7px;}
+.xp-lbl{font-size:.75rem;font-weight:800;color:var(--sun);}
+.xp-bar{width:100px;height:9px;background:rgba(255,255,255,0.2);border-radius:99px;overflow:hidden;}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--sun),var(--coral));border-radius:99px;transition:width .7s cubic-bezier(.4,0,.2,1);}
+.lvl-badge{background:var(--sun);color:var(--navy);font-family:'Fredoka One';font-size:.8rem;padding:3px 10px;border-radius:99px;}
+.streak-pill{background:linear-gradient(135deg,#FF7043,#E53935);color:white;font-family:'Fredoka One';font-size:.78rem;padding:3px 11px;border-radius:99px;}
+#teacherBtn{background:rgba(255,255,255,0.12);color:white;border:2px solid rgba(255,255,255,0.35);padding:5px 13px;border-radius:99px;cursor:pointer;font-family:'Nunito';font-weight:800;font-size:.82rem;transition:background .2s;}
+#teacherBtn:hover{background:rgba(255,255,255,0.25);}
+
+/* SCREENS */
+.screen{display:none;padding:22px;max-width:880px;margin:0 auto;}
+.screen.active{display:block;}
+
+/* HOME */
+.greeting{font-family:'Fredoka One';font-size:2rem;color:var(--navy);margin-bottom:4px;}
+.sub{font-size:.95rem;color:#555;margin-bottom:22px;}
+.stats-row{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;}
+.stat-card{background:white;border-radius:var(--radius);padding:14px 18px;box-shadow:var(--shadow);flex:1;min-width:120px;text-align:center;}
+.stat-num{font-family:'Fredoka One';font-size:1.9rem;color:var(--navy);}
+.stat-lbl{font-size:.75rem;color:#888;font-weight:700;margin-top:2px;}
+.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.action-btn{background:white;border:none;border-radius:var(--radius);padding:22px 16px;cursor:pointer;box-shadow:var(--shadow);transition:transform .15s,box-shadow .15s;text-align:center;}
+.action-btn:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+.action-btn:active{transform:translateY(0);}
+.btn-icon{font-size:2.2rem;margin-bottom:7px;}
+.btn-title{font-family:'Fredoka One';font-size:1.05rem;color:var(--navy);}
+.btn-desc{font-size:.78rem;color:#777;margin-top:3px;}
+.action-btn.blue{border-top:5px solid var(--sky);}
+.action-btn.yellow{border-top:5px solid var(--sun);}
+.action-btn.green{border-top:5px solid var(--grass);}
+.action-btn.purple{border-top:5px solid var(--purple);}
+
+/* STRUGGLE WORDS NOTICE */
+.struggle-notice{background:#fff3e0;border:2px solid #FFB300;border-radius:14px;padding:12px 18px;margin-bottom:18px;font-size:.88rem;color:#E65100;}
+.struggle-notice strong{font-weight:800;}
+
+/* TOPIC SCREEN */
+.topic-box{background:white;border-radius:var(--radius);padding:26px;box-shadow:var(--shadow);margin-bottom:18px;}
+.topic-box h2{font-family:'Fredoka One';font-size:1.45rem;color:var(--navy);margin-bottom:14px;}
+.topic-input-row{display:flex;gap:10px;flex-wrap:wrap;}
+#topicInput{flex:1;padding:13px 17px;border:3px solid var(--sky);border-radius:12px;font-size:1.05rem;font-family:'Nunito';outline:none;transition:border-color .2s;min-width:180px;}
+#topicInput:focus{border-color:var(--navy);}
+.go-btn{padding:13px 26px;background:var(--navy);color:white;border:none;border-radius:12px;font-family:'Fredoka One';font-size:1.05rem;cursor:pointer;transition:background .2s;}
+.go-btn:hover{background:var(--indigo);}
+.topic-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+.chip{background:#e8eaf6;color:var(--navy);border:none;border-radius:99px;padding:6px 14px;font-family:'Nunito';font-weight:700;font-size:.82rem;cursor:pointer;transition:background .15s;}
+.chip:hover{background:#c5cae9;}
+.divider{text-align:center;color:#bbb;margin:14px 0;font-weight:700;font-size:.9rem;}
+.social-btn{width:100%;padding:15px;background:linear-gradient(135deg,var(--purple),var(--coral));color:white;border:none;border-radius:12px;font-family:'Fredoka One';font-size:1.05rem;cursor:pointer;transition:opacity .2s;}
+.social-btn:hover{opacity:.9;}
+
+/* READING */
+.reading-card{background:var(--card);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);line-height:2.3;font-size:1.32rem;margin-bottom:16px;}
+.word{display:inline-block;cursor:default;border-radius:6px;padding:1px 2px;transition:background .15s;}
+.word.multisyl{cursor:pointer;text-decoration:underline dotted 2px var(--sky);color:#1565C0;}
+.word.multisyl:hover{background:rgba(41,182,246,0.18);}
+.reading-hint{background:#e3f2fd;border-radius:12px;padding:10px 16px;margin-bottom:14px;font-size:.85rem;color:#1565C0;font-weight:700;}
+.reading-controls{background:white;border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);}
+.reading-controls h3{font-family:'Fredoka One';color:var(--navy);margin-bottom:12px;}
+.score-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px;}
+.score-row label{font-weight:800;font-size:.92rem;}
+#wordsCorrect{width:85px;padding:9px;border:3px solid var(--grass);border-radius:10px;font-size:1.15rem;text-align:center;font-family:'Nunito';font-weight:700;outline:none;}
+.total-w{color:#999;font-size:.85rem;}
+.submit-btn{padding:11px 24px;background:var(--grass);color:white;border:none;border-radius:12px;font-family:'Fredoka One';font-size:.95rem;cursor:pointer;transition:background .2s;}
+.submit-btn:hover{background:#43A047;}
+.struggle-input-wrap{margin-top:14px;border-top:1px solid #f0f0f0;padding-top:14px;}
+.struggle-input-wrap label{font-weight:800;font-size:.9rem;color:#555;display:block;margin-bottom:6px;}
+.struggle-input-wrap p{font-size:.8rem;color:#999;margin-bottom:8px;}
+#struggleInput{width:100%;padding:10px 14px;border:2px solid #e0e0e0;border-radius:10px;font-family:'Nunito';font-size:.95rem;outline:none;transition:border-color .2s;}
+#struggleInput:focus{border-color:var(--warn);}
+
+/* LOADING */
+.loading-wrap{text-align:center;padding:50px 20px;}
+.spinner{width:48px;height:48px;border:5px solid #e0e0e0;border-top-color:var(--sky);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 14px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-txt{font-family:'Fredoka One';color:var(--navy);font-size:1.05rem;}
+
+/* LEADERBOARD */
+.lb-card{background:white;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:18px;}
+.lb-hdr{background:var(--navy);color:white;padding:16px 22px;font-family:'Fredoka One';font-size:1.25rem;}
+.lb-row{display:flex;align-items:center;padding:13px 22px;border-bottom:1px solid #f5f5f5;gap:12px;}
+.lb-row:last-child{border-bottom:none;}
+.lb-rank{font-family:'Fredoka One';font-size:1.25rem;color:var(--navy);width:30px;}
+.lb-name{flex:1;font-weight:700;}
+.lb-meta{flex:1;font-size:.78rem;color:#aaa;}
+.lb-score{font-family:'Fredoka One';color:var(--coral);font-size:1.05rem;}
+.lb-empty{padding:28px;text-align:center;color:#bbb;}
+
+/* BADGES */
+.badge-grid{display:flex;gap:12px;flex-wrap:wrap;}
+.badge{background:white;border-radius:14px;padding:10px 13px;text-align:center;box-shadow:var(--shadow);min-width:82px;opacity:.3;transition:opacity .35s,transform .2s;}
+.badge.earned{opacity:1;}
+.badge.earned:hover{transform:scale(1.06);}
+.badge-icon{font-size:1.75rem;}
+.badge-name{font-size:.68rem;font-weight:800;color:#555;margin-top:4px;}
+
+/* TEACHER */
+.teacher-panel{background:white;border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;margin-bottom:18px;}
+.teacher-panel h2{font-family:'Fredoka One';color:var(--navy);margin-bottom:16px;}
+.t-stat-grid{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px;}
+.t-stat{background:#f5f5f5;border-radius:12px;padding:12px 18px;flex:1;min-width:100px;text-align:center;}
+.t-num{font-family:'Fredoka One';font-size:1.75rem;color:var(--navy);}
+.t-lbl{font-size:.72rem;color:#999;font-weight:700;}
+.progress-table{width:100%;border-collapse:collapse;font-size:.85rem;}
+.progress-table th{background:var(--navy);color:white;padding:9px 12px;text-align:left;}
+.progress-table td{padding:9px 12px;border-bottom:1px solid #f5f5f5;vertical-align:top;}
+.progress-table tr:hover td{background:#fafafa;}
+.blocked-table th{background:#B71C1C;}
+.struggle-tag{display:inline-block;background:#fff3e0;color:#E65100;border-radius:99px;padding:2px 8px;font-size:.75rem;font-weight:700;margin:2px;}
+.clear-btn{background:#ef5350;color:white;border:none;border-radius:10px;padding:9px 18px;cursor:pointer;font-family:'Nunito';font-weight:800;}
+.clear-btn:hover{background:#e53935;}
+.section-title{font-family:'Fredoka One';color:var(--navy);font-size:1.1rem;margin:18px 0 10px;}
+
+/* LOGIN */
+.login-card{background:white;border-radius:var(--radius);padding:34px;box-shadow:var(--shadow);max-width:370px;margin:50px auto;}
+.login-card h2{font-family:'Fredoka One';color:var(--navy);margin-bottom:18px;text-align:center;}
+.login-card input{width:100%;padding:11px 15px;border:2px solid #ddd;border-radius:10px;font-size:.98rem;font-family:'Nunito';margin-bottom:12px;outline:none;}
+.login-card input:focus{border-color:var(--sky);}
+.login-card .login-go{width:100%;padding:13px;background:var(--navy);color:white;border:none;border-radius:12px;font-family:'Fredoka One';font-size:1.05rem;cursor:pointer;}
+.login-err{color:#e53935;font-size:.82rem;text-align:center;margin-top:7px;}
+
+/* BLOCKED POPUP */
+.popup-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;align-items:center;justify-content:center;}
+.popup-overlay.open{display:flex;}
+.popup-box{background:white;border-radius:var(--radius);padding:30px;max-width:400px;width:92%;text-align:center;box-shadow:0 12px 48px rgba(0,0,0,0.25);animation:popIn .25s ease;}
+@keyframes popIn{from{transform:scale(.82);opacity:0}to{transform:scale(1);opacity:1}}
+.popup-box.warn-box{border-top:6px solid #E53935;}
+.popup-box.syl-box{border-top:6px solid var(--sky);}
+.popup-box h3{font-family:'Fredoka One';font-size:1.2rem;margin-bottom:12px;}
+.popup-close{background:var(--navy);color:white;border:none;padding:11px 28px;border-radius:12px;font-family:'Fredoka One';font-size:.98rem;cursor:pointer;margin-top:16px;}
+.syl-display{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:14px 0;}
+.syl-chunk{background:var(--sky);color:white;padding:7px 16px;border-radius:99px;font-family:'Fredoka One';font-size:1.3rem;}
+.syl-dot{color:#ccc;display:flex;align-items:center;font-size:1.1rem;}
+.popup-tip{font-size:.82rem;color:#777;margin-top:8px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--navy);color:white;padding:12px 26px;border-radius:99px;font-family:'Fredoka One';font-size:1rem;z-index:600;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;}
+
+/* CONFETTI */
+.confetti-piece{position:fixed;width:9px;height:9px;border-radius:2px;z-index:700;pointer-events:none;animation:fall 2.8s ease-in forwards;}
+@keyframes fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1;}100%{transform:translateY(110vh) rotate(800deg);opacity:0;}}
+
+/* NEW BEST BANNER */
+.best-banner{background:linear-gradient(135deg,var(--sun),var(--coral));color:white;padding:16px 22px;border-radius:var(--radius);text-align:center;font-family:'Fredoka One';font-size:1.15rem;margin-bottom:14px;animation:pulse 1.2s ease infinite alternate;}
+@keyframes pulse{to{transform:scale(1.015);}}
+
+.back-btn{background:none;border:2px solid #ccc;color:#666;padding:9px 18px;border-radius:10px;cursor:pointer;font-family:'Nunito';font-weight:800;font-size:.88rem;}
+.back-btn:hover{border-color:#999;color:#333;}
+
+@media(max-width:520px){
+  .action-grid{grid-template-columns:1fr;}
+  header h1{font-size:1.25rem;}
+  .reading-card{font-size:1.1rem;}
+  .hdr-right .xp-wrap{display:none;}
+}
+</style>
+<!-- Firebase compat SDKs — work on GitHub Pages without module imports -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <h1>📚 Word Wizard</h1>
+  <div class="hdr-right">
+    <div class="xp-wrap">
+      <span class="xp-lbl">XP</span>
+      <div class="xp-bar"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
+      <span class="lvl-badge" id="lvlBadge">Lv 1</span>
+    </div>
+    <span class="streak-pill" id="streakPill">🔥 0 days</span>
+    <button id="teacherBtn" onclick="showScreen('teacherLoginScreen')">👩‍🏫 Teacher</button>
+  </div>
+</header>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- BLOCKED POPUP -->
+<div class="popup-overlay" id="blockedPopup">
+  <div class="popup-box warn-box">
+    <h3>🚫 Oops! Can't use that topic.</h3>
+    <p style="color:#555;font-size:.95rem;line-height:1.6">That topic isn't something we read about here. Please try a different one — like animals, sport, space, or food!</p>
+    <button class="popup-close" onclick="closePopup('blockedPopup')">OK, I'll try again!</button>
+  </div>
+</div>
+
+<!-- SYLLABLE POPUP -->
+<div class="popup-overlay" id="sylPopup">
+  <div class="popup-box syl-box">
+    <h3>Let's break it down! 🔍</h3>
+    <div class="syl-display" id="sylDisplay"></div>
+    <p class="popup-tip">Say each part, then put them all together!</p>
+    <button class="popup-close" onclick="closePopup('sylPopup')">Got it! ✅</button>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN: HOME ══════════ -->
+<div class="screen active" id="homeScreen">
+  <p class="greeting" id="greetingTxt">Hi there! 👋</p>
+  <p class="sub">Ready to read today? Let's go!</p>
+
+  <div id="struggleNotice" style="display:none" class="struggle-notice">
+    🎯 <strong>Practice words from last time:</strong> <span id="strugglerList"></span>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-num" id="sTotal">0</div><div class="stat-lbl">Words Read</div></div>
+    <div class="stat-card"><div class="stat-num" id="sBest">0</div><div class="stat-lbl">Best Score</div></div>
+    <div class="stat-card"><div class="stat-num" id="sSessions">0</div><div class="stat-lbl">Sessions</div></div>
+    <div class="stat-card"><div class="stat-num" id="sLevel">1</div><div class="stat-lbl">Level</div></div>
+  </div>
+
+  <div class="action-grid">
+    <button class="action-btn blue" onclick="showScreen('topicScreen')">
+      <div class="btn-icon">🎯</div>
+      <div class="btn-title">Pick a Topic</div>
+      <div class="btn-desc">Choose what you want to read</div>
+    </button>
+    <button class="action-btn yellow" onclick="launchSocialStory()">
+      <div class="btn-icon">🌟</div>
+      <div class="btn-title">Surprise Story</div>
+      <div class="btn-desc">A special story just for you</div>
+    </button>
+    <button class="action-btn green" onclick="showScreen('leaderboardScreen')">
+      <div class="btn-icon">🏆</div>
+      <div class="btn-title">Leaderboard</div>
+      <div class="btn-desc">See your best scores</div>
+    </button>
+    <button class="action-btn purple" onclick="showScreen('badgesScreen')">
+      <div class="btn-icon">🎖️</div>
+      <div class="btn-title">My Badges</div>
+      <div class="btn-desc">Collect them all!</div>
+    </button>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN: TOPIC ══════════ -->
+<div class="screen" id="topicScreen">
+  <button class="back-btn" style="margin-bottom:14px" onclick="showScreen('homeScreen')">← Back</button>
+  <div class="topic-box">
+    <h2>🎯 What do you want to read about?</h2>
+    <div class="topic-input-row">
+      <input type="text" id="topicInput" placeholder="e.g. dogs, space, football…" maxlength="60"
+        onkeydown="if(event.key==='Enter')launchTopic()"/>
+      <button class="go-btn" onclick="launchTopic()">Go! 🚀</button>
+    </div>
+    <div class="topic-chips">
+      <span style="font-size:.8rem;font-weight:700;color:#999;align-self:center;">Try:</span>
+      <button class="chip" onclick="quickTopic('dogs')">🐶 Dogs</button>
+      <button class="chip" onclick="quickTopic('cats')">🐱 Cats</button>
+      <button class="chip" onclick="quickTopic('space')">🚀 Space</button>
+      <button class="chip" onclick="quickTopic('football')">⚽ Football</button>
+      <button class="chip" onclick="quickTopic('dinosaurs')">🦕 Dinosaurs</button>
+      <button class="chip" onclick="quickTopic('minecraft')">⛏️ Minecraft</button>
+      <button class="chip" onclick="quickTopic('sharks')">🦈 Sharks</button>
+      <button class="chip" onclick="quickTopic('trains')">🚂 Trains</button>
+      <button class="chip" onclick="quickTopic('robots')">🤖 Robots</button>
+      <button class="chip" onclick="quickTopic('cars')">🚗 Cars</button>
+      <button class="chip" onclick="quickTopic('farm animals')">🐄 Farm</button>
+      <button class="chip" onclick="quickTopic('ocean')">🌊 Ocean</button>
+    </div>
+    <div class="divider">— or —</div>
+    <button class="social-btn" onclick="launchSocialStory()">✨ Generate a Surprise Story for Me!</button>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN: READING ══════════ -->
+<div class="screen" id="readingScreen">
+  <button class="back-btn" style="margin-bottom:14px" onclick="showScreen('homeScreen')">← Back</button>
+  <div id="readingContent">
+    <div class="loading-wrap"><div class="spinner"></div><p class="loading-txt">Finding your story…</p></div>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN: LEADERBOARD ══════════ -->
+<div class="screen" id="leaderboardScreen">
+  <button class="back-btn" style="margin-bottom:14px" onclick="showScreen('homeScreen')">← Back</button>
+  <div class="lb-card">
+    <div class="lb-hdr" id="lbHdr">🏆 High Scores</div>
+    <div id="lbList"><div class="lb-empty">No scores yet — go read something! 📖</div></div>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN: BADGES ══════════ -->
+<div class="screen" id="badgesScreen">
+  <button class="back-btn" style="margin-bottom:14px" onclick="showScreen('homeScreen')">← Back</button>
+  <h2 style="font-family:'Fredoka One';color:var(--navy);margin-bottom:16px;">🎖️ My Badges</h2>
+  <div class="badge-grid" id="badgeGrid"></div>
+</div>
+
+<!-- ══════════ SCREEN: TEACHER LOGIN ══════════ -->
+<div class="screen" id="teacherLoginScreen">
+  <div class="login-card">
+    <h2>👩‍🏫 Teacher Login</h2>
+    <input type="text" id="loginUser" placeholder="Username" onkeydown="if(event.key==='Enter')tryLogin()"/>
+    <input type="password" id="loginPass" placeholder="Password" onkeydown="if(event.key==='Enter')tryLogin()"/>
+    <button class="login-go" onclick="tryLogin()">Login</button>
+    <p class="login-err" id="loginErr"></p>
+    <button class="back-btn" style="width:100%;margin-top:12px;text-align:center" onclick="showScreen('homeScreen')">← Back</button>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN: TEACHER PANEL ══════════ -->
+<div class="screen" id="teacherScreen">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+    <h2 style="font-family:'Fredoka One';color:var(--navy);">👩‍🏫 Teacher Dashboard</h2>
+    <div style="display:flex;gap:8px">
+      <button class="clear-btn" onclick="clearData()">🗑 Clear All Data</button>
+      <button class="back-btn" onclick="showScreen('homeScreen')">← Exit</button>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="teacher-panel">
+    <h2>Summary</h2>
+    <div class="t-stat-grid">
+      <div class="t-stat"><div class="t-num" id="tTotal">0</div><div class="t-lbl">Total Words</div></div>
+      <div class="t-stat"><div class="t-num" id="tSessions">0</div><div class="t-lbl">Sessions</div></div>
+      <div class="t-stat"><div class="t-num" id="tBest">0</div><div class="t-lbl">Best Score</div></div>
+      <div class="t-stat"><div class="t-num" id="tAvg">0</div><div class="t-lbl">Avg / Session</div></div>
+    </div>
+
+    <div class="section-title">📋 Session Log</div>
+    <div style="overflow-x:auto">
+      <table class="progress-table">
+        <thead><tr><th>#</th><th>Date</th><th>Topic</th><th>Correct</th><th>Total</th><th>%</th><th>Struggle Words (recorded)</th></tr></thead>
+        <tbody id="sessionLog"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Blocked attempts -->
+  <div class="teacher-panel">
+    <h2>🚫 Blocked Topic Attempts</h2>
+    <p style="font-size:.85rem;color:#888;margin-bottom:12px">Topics the student tried to search that were blocked.</p>
+    <div style="overflow-x:auto">
+      <table class="progress-table blocked-table">
+        <thead><tr><th>#</th><th>Date &amp; Time</th><th>Blocked Topic</th></tr></thead>
+        <tbody id="blockedLog"></tbody>
+      </table>
+    </div>
+    <div id="blockedEmpty" style="color:#bbb;text-align:center;padding:16px;display:none">No blocked attempts yet.</div>
+  </div>
+
+  <!-- Settings -->
+  <div class="teacher-panel">
+    <h2>⚙️ Settings</h2>
+
+    <!-- Firebase config -->
+    <div style="background:#e8f4fd;border-radius:14px;padding:18px;margin-bottom:22px;border:2px solid #90CAF9;">
+      <p style="font-family:'Fredoka One';color:var(--navy);font-size:1rem;margin-bottom:4px;">☁️ Firebase Sync</p>
+      <div id="syncStatus" style="font-size:.82rem;margin-bottom:12px;padding:6px 12px;border-radius:8px;background:#fff3e0;color:#E65100;font-weight:700;">
+        ⚠️ Not connected — data is local only
+      </div>
+      <p style="font-size:.82rem;color:#555;margin-bottom:10px">Paste your Firebase project details below to sync data across all teacher devices.</p>
+      <div style="display:grid;gap:8px;">
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <label style="font-size:.82rem;font-weight:800;width:90px;color:#333;">API Key</label>
+          <input type="text" id="fbApiKey" placeholder="AIzaSy…" style="flex:1;min-width:180px;padding:8px 12px;border:2px solid #ddd;border-radius:8px;font-family:'Nunito';font-size:.85rem;outline:none;"/>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <label style="font-size:.82rem;font-weight:800;width:90px;color:#333;">Project ID</label>
+          <input type="text" id="fbProjectId" placeholder="word-wizard-xxxxx" style="flex:1;min-width:180px;padding:8px 12px;border:2px solid #ddd;border-radius:8px;font-family:'Nunito';font-size:.85rem;outline:none;"/>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <label style="font-size:.82rem;font-weight:800;width:90px;color:#333;">Database URL</label>
+          <input type="text" id="fbDbUrl" placeholder="https://word-wizard-xxxxx-default-rtdb.firebaseio.com" style="flex:1;min-width:180px;padding:8px 12px;border:2px solid #ddd;border-radius:8px;font-family:'Nunito';font-size:.85rem;outline:none;"/>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:4px;align-items:center;flex-wrap:wrap">
+          <button onclick="saveFirebaseConfig()" style="padding:10px 20px;background:var(--navy);color:white;border:none;border-radius:10px;font-family:'Fredoka One';cursor:pointer;">Connect ☁️</button>
+          <button onclick="disconnectFirebase()" style="padding:10px 18px;background:#f5f5f5;color:#666;border:2px solid #ddd;border-radius:10px;font-family:'Nunito';font-weight:700;font-size:.82rem;cursor:pointer;">Disconnect</button>
+          <span id="fbSaved" style="display:none;color:var(--grass);font-weight:800;font-size:.88rem;">✅ Connected!</span>
+        </div>
+      </div>
+    </div>
+
+    <p style="font-size:.88rem;color:#555;margin-bottom:8px"><strong>Student name shown in app:</strong></p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <input type="text" id="studentNameInput" placeholder="Enter student name" style="width:200px;padding:10px 13px;border:2px solid #ddd;border-radius:10px;font-family:'Nunito';font-size:.92rem;outline:none;"/>
+      <button onclick="saveStudentName()" style="padding:10px 20px;background:var(--grass);color:white;border:none;border-radius:10px;font-family:'Fredoka One';cursor:pointer;">Save</button>
+      <span id="nameSaved" style="display:none;color:var(--grass);font-weight:800;">✅ Saved!</span>
+    </div>
+
+    <div style="margin-top:20px">
+      <p style="font-size:.88rem;color:#555;margin-bottom:8px"><strong>Current struggle words queued for next session:</strong></p>
+      <div id="currentStruggleWords" style="font-size:.88rem;color:#777;padding:8px 12px;background:#f9f9f9;border-radius:10px;min-height:36px;"></div>
+      <button onclick="clearStruggleWords()" style="margin-top:8px;padding:8px 16px;background:#f5f5f5;border:2px solid #ddd;border-radius:10px;cursor:pointer;font-family:'Nunito';font-weight:700;font-size:.82rem;">Clear struggle words</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  DATA — 100+ PRE-WRITTEN STORIES
+// ══════════════════════════════════════════════
+const STORIES = {
+
+// ── ANIMALS ──
+dogs: [
+  "I have a dog. He is big and brown. He likes to run and play. Every day we go for a walk. He runs fast. He can jump high. My dog is my best friend. He sleeps on my bed at night. In the morning he wakes me up. He wags his tail when he is happy. I give him water and food. He looks at me and I look at him. We are a good team.",
+  "Dogs are fun pets. They can learn new things. Some dogs are big. Some dogs are small. A dog will come when you call. Dogs like to run in the park. They like to play with a ball. A dog will lick your hand. Dogs sleep a lot. My dog can sit and stay. He is a good dog. I love my dog very much.",
+  "Some dogs help people. They can find lost things. They can help when it is dark. A dog can hear things we can not hear. Dogs work hard every day. They do not give up. A dog will stay by your side. Some dogs pull a sled in the snow. Dogs swim in the water too. A good dog is kind and brave.",
+],
+cats: [
+  "Cats are soft and warm. My cat is black and white. She likes to sleep all day long. At night she runs and plays. She will jump on the bed. She can jump very high. My cat drinks milk from a bowl. She likes fish too. She sits in the sun by the window. I pat her and she purrs. Cats are good pets.",
+  "A cat can climb up a tree. She looks down from up high. A cat has big eyes. She can see in the dark. Cats like to play with string. They run and jump and roll. My cat sleeps on my lap. She is warm and soft. I like to hold her. She purrs and goes to sleep. I love my cat.",
+],
+sharks: [
+  "Sharks live in the sea. They are big and fast. A shark has many teeth. It can swim very well. Sharks eat fish and more. They swim all day and night. A shark must keep moving. It can not stop for long. Sharks are very old animals. They have been here a long time. Most sharks do not hurt people. They help keep the sea clean.",
+  "The great white shark is big. It has rows of sharp teeth. It lives in cold water. A shark can smell from far away. Baby sharks are called pups. They are small but strong. Sharks swim near the top and down deep. They move fast when they hunt. Sharks help the ocean stay healthy. They are one of the best swimmers in the sea.",
+],
+fish: [
+  "Fish live in the water. Some fish are big. Some fish are very small. Fish swim all day long. They use their fins to move. A fish has scales on its body. Some fish are bright red and blue and green. Fish eat small things in the water. Some fish live in the sea. Some fish live in rivers. I like to look at fish.",
+],
+birds: [
+  "Birds can fly up in the sky. They have wings and feathers. A bird has a beak to eat. Some birds eat seeds. Some birds eat worms. Birds make a nest in a tree. They lay eggs in the nest. Baby birds are small and soft. A mother bird brings food. Birds sing in the morning. I like to hear birds sing.",
+  "Penguins are birds but they can not fly. They live in a cold place. They swim very well in the cold water. Penguins have black and white feathers. They walk funny on the ice. Baby penguins are soft and grey. They stay close to their mother and father. Penguins eat fish from the sea. They are very good swimmers.",
+],
+horses: [
+  "A horse is a big animal. It has four legs and a long tail. Horses can run very fast. They eat grass and hay. A horse lives on a farm. People ride horses. You sit up high on a horse. Horses can jump over things. A baby horse is called a foal. It can walk soon after it is born. Horses are strong and kind.",
+],
+farm_animals: [
+  "On the farm there are many animals. A cow gives us milk. A pig likes to roll in mud. A hen lays eggs for us. A sheep has soft wool. A horse pulls the cart. A dog helps the farmer. A cat keeps the mice away. All the animals work hard. The farmer feeds them every day. The farm is a good place to be.",
+  "The farmer gets up early. He feeds the cows and horses. The cows give milk. The hens lay eggs. The sheep eat grass in the field. The pigs eat corn. The dog runs around the farm. The cat sits on the wall. At night all the animals go to sleep. The farm is quiet. The stars come out. It is a good night.",
+],
+frogs: [
+  "A frog lives near the water. It can jump very far. A frog has big eyes. It can see all around. Frogs eat flies and bugs. They catch them with a long tongue. A frog starts life as an egg. Then it is a tadpole. It grows legs and gets big. Then it is a frog. Frogs like rain. You can hear them at night.",
+],
+dinosaurs: [
+  "Long ago there were dinosaurs. They were very big animals. Some ate plants. Some ate meat. The T-rex was very tall. It had big sharp teeth. The triceratops had three horns. It ate plants from the ground. Some dinosaurs could run fast. Some had long necks to eat from trees. Dinosaurs are not here now. We find their bones in the ground.",
+  "The brontosaurus had a very long neck. It ate leaves from tall trees. It walked on four big legs. It was one of the biggest animals ever. The velociraptor was small but fast. It hunted in a pack. Dinosaurs lived long ago. We know about them from the bones we find. It is fun to think about what they looked like.",
+],
+
+// ── SPACE ──
+space: [
+  "Space is very big. The stars are far away. Our sun is a star. It gives us light and heat. The moon goes around the earth. We can see it at night. There are eight planets in our solar system. Some are big and some are small. Mars is a red planet. Saturn has rings around it. Space is a beautiful place to look at.",
+  "People have gone to space. They fly in a rocket. A rocket goes up very fast. Astronauts wear a special suit. There is no air in space. The astronauts float around in the rocket. They look back and see the earth. It is blue and green and white. Going to space is very hard work. One day you could go to space too.",
+  "The moon is close to the earth. It has no air and no water. It is very cold at night and hot in the day. People have walked on the moon. They left their footprints there. The footprints are still there now. There is no wind to blow them away. The moon looks big and bright in the night sky. I like to look at the moon.",
+],
+stars: [
+  "Stars are very far away. They look small but they are very big. Our sun is a star too. Stars give off light. Some stars are hot and blue. Some stars are old and red. Stars come out at night. You can see them when the sky is dark and clear. People long ago made pictures with the stars. They told stories about them. I like to look at the stars.",
+],
+planets: [
+  "There are eight planets that go around the sun. Earth is the planet we live on. Mars is the next planet out. It is red and cold. Jupiter is the biggest planet. It has a big red spot. Saturn has beautiful rings. They are made of ice and rock. Mercury is the planet closest to the sun. All the planets move around the sun every year.",
+],
+rockets: [
+  "A rocket is a fast machine. It can go up into space. A rocket has a lot of fire and power. It goes up very fast. People sit in the top of the rocket. They are called astronauts. When the rocket goes up it is very loud. The astronauts hold on. Soon they are in space. There is no air in space. But the rocket has all they need.",
+],
+
+// ── SPORT & GAMES ──
+football: [
+  "Football is a great game. Two teams kick the ball. They try to get the ball in the goal. The team with the most goals wins. Players run fast. They kick and pass. The goalie tries to stop the ball. Football is played all over the world. People love to watch it. I like to play football with my friends. It is a fun game.",
+  "I love to play football. I kick the ball with my foot. I run fast down the field. My team passes the ball. We work together. When we score a goal we all cheer. My friend is the goalie. He is very good. He jumps and stops the ball. After the game we drink water and sit down. Playing football makes me feel good.",
+],
+swimming: [
+  "Swimming is good for you. You move your arms and kick your legs. The water holds you up. You can swim fast or slow. Some people swim in a pool. Some people swim in the sea. It is fun to swim with friends. You can race and splash. You have to learn to put your face in the water. I like swimming a lot. It makes me feel strong.",
+],
+basketball: [
+  "Basketball is a fast game. Two teams try to throw the ball in the net. The net is up high. Players run and jump. You can pass the ball to your team. You can bounce the ball on the ground. When the ball goes in the net you get points. The team with the most points wins. I like to shoot the ball and try to score.",
+],
+cricket: [
+  "Cricket is a great game. One player hits the ball. Another player bowls the ball. The team tries to score runs. When you hit the ball far you can run. The other team tries to get you out. Cricket can go on for a long time. It is played on a big green field. I like to bat. When I hit the ball it feels good.",
+],
+minecraft: [
+  "Minecraft is a game where you build things. You can make a house from blocks. You can dig in the ground. At night the monsters come out. You need a safe place to sleep. In the day you find wood and stone. You can make tools and food. You can go on a big adventure. Some people build very big things in Minecraft. I like to make my own world.",
+  "In Minecraft you can go to many places. You can dig deep in the ground. You find iron and gold and coal. You make things with what you find. You can build a big castle. You can grow a farm. You can make friends and play together. There are monsters to fight. The game never ends. You can always do something new in Minecraft.",
+],
+video_games: [
+  "I like to play video games. I sit down and hold the controller. I move my player on the screen. Some games are fast. Some games are slow. I like to win but I do not give up when I lose. I try again. My friend plays with me. We take turns. Playing games is fun. But I also like to go outside and play. Both are good.",
+],
+
+// ── NATURE & SCIENCE ──
+ocean: [
+  "The ocean is very big. It covers most of the earth. The water in the ocean is salty. Many animals live there. Fish swim in the water. Dolphins jump in the waves. Whales are the biggest animals in the sea. Octopus hide under rocks. Crabs walk on the sand. The ocean is deep and dark in some places. The waves crash on the shore. I love the ocean.",
+  "Waves crash on the beach. The sand is warm under my feet. I look out at the sea. It is so big and blue. I can see the sun on the water. Small fish swim near the rocks. A crab runs into the sand. I wade in the water. It is cold at first. Then I go in more. I swim and float. The sea feels good.",
+],
+rain: [
+  "Rain falls from the clouds. It makes the grass green. Flowers drink the rain. Animals drink from the puddles. I like to watch the rain on the window. It makes a soft sound. After the rain the air is clean. Sometimes there is a rainbow in the sky. The rainbow has many colours. Red and blue and green and yellow. Rain is good for the earth.",
+],
+snow: [
+  "Snow falls from the sky. It is cold and white. Snow covers the ground. Trees look white in the snow. You can make a snowman. You pack the snow into balls. Then you put them on top of each other. Give the snowman a hat and a coat. You can play in the snow all day. Your hands get cold. Then you go inside to get warm.",
+],
+trees: [
+  "Trees are very important. They give us air to breathe. Birds make nests in trees. Animals live in trees. Trees give us fruit and wood. In summer trees have green leaves. In autumn the leaves turn red and gold. They fall to the ground. In winter the trees are bare. In spring new leaves grow back. Trees are alive and they take a long time to grow.",
+],
+flowers: [
+  "Flowers grow in the garden. They are red and blue and yellow. Flowers have petals and leaves. Bees come to drink from the flowers. They take the sweet nectar. Flowers smell very good. Some flowers are big and some are small. You can pick flowers and put them in water. They look very pretty in a vase. I like to plant flowers in the garden.",
+],
+weather: [
+  "Every day the weather is different. Some days are warm and sunny. Some days are cold and windy. On a hot day I drink cold water. On a cold day I wear a coat. Rain makes the ground wet. Snow is cold and white. Thunder is very loud. Lightning lights up the sky. I like sunny days best. I can go outside and play.",
+],
+rocks: [
+  "Rocks are all around us. They come in many shapes and sizes. Some rocks are very hard. Some rocks are smooth. Water makes rocks smooth over a long time. You can find rocks by the river. Some rocks have colours in them. People use rocks to build houses and roads. Some rocks have old animal bones inside them. We call these fossils. I like to collect rocks.",
+],
+
+// ── TRANSPORT ──
+trains: [
+  "Trains run on tracks. They can carry many people. A train has an engine at the front. The engine makes the train go. Trains go very fast. You can look out the window and see the trees go by. Trains go through tunnels and over bridges. Some trains go underground. I like the sound a train makes. It is fun to ride on a train.",
+  "Long ago trains used steam. A fire heated water in the engine. Steam made the wheels turn. The train made a loud sound. Today trains use electricity. They can go very fast. Some trains float on the track. They have no wheels at all. Trains carry food and cars and things we need every day. Trains are a great way to travel.",
+],
+cars: [
+  "Cars take us to many places. A car has four wheels and an engine. The engine makes the car go. You turn the wheel to go left and right. You push a pedal to go fast. You push another pedal to stop. Cars come in many colours. Some cars are big. Some cars are small. You need to be safe in a car. Always put on your seatbelt.",
+],
+planes: [
+  "A plane can fly very high in the sky. It has big wings. The wings help it stay up in the air. The engines make it go forward very fast. People sit inside and look out the windows. You can see the clouds and the ground far below. Planes fly to places that are very far away. It would take days to drive but only hours to fly.",
+],
+boats: [
+  "Boats float on water. Some boats are very small. Some boats are very big. A sailboat uses the wind to move. A motorboat has an engine. Big ships carry things across the ocean. They carry food and cars and more. Fishing boats go out to catch fish. I like to ride in a small boat on the river. It feels good on the water.",
+],
+bikes: [
+  "I like to ride my bike. I put on my helmet first. Then I ride down the street. I can go fast on my bike. I turn the handles to go left and right. I push the brakes to stop. I can ride to the park on my bike. It is good to ride a bike. It makes you strong. My friend rides her bike too. We ride together.",
+],
+
+// ── FOOD & EVERYDAY LIFE ──
+food: [
+  "I like to eat good food. In the morning I have toast and milk. At lunch I eat a sandwich. I put cheese and lettuce on my bread. For dinner my mother makes soup. It is warm and good. I drink water with my dinner. Sometimes we have fruit for a treat. Apples and bananas are my favourite. Eating good food makes me feel well.",
+  "Fruit is good for you. Apples are red and green. Oranges are bright and round. Bananas are long and yellow. Strawberries are small and sweet. Watermelon is big and full of water. You can eat fruit any time of day. It gives you energy to play and learn. I like to eat fruit after school. It makes me feel good.",
+],
+cooking: [
+  "My mother likes to cook. She makes bread and soup and cake. First she gets all the things she needs. She puts them on the table. Then she mixes them together. She puts the food in the oven. It gets hot and starts to smell good. We wait for it to be ready. Then we eat together. The food is warm and very good.",
+],
+school: [
+  "I go to school every day. I carry my bag. Inside there are books and pens. My teacher is kind. She helps me learn new things. I sit at my desk and read. I write in my book. At lunch I eat and play with my friends. In the afternoon we do maths. School helps me learn and grow. I like my school very much.",
+  "At school I learn to read. I look at the words. I say them out loud. Some words are easy. Some words are hard. I try my best every time. When I read a hard word I look at each part. Then I put the parts together. My teacher helps me. Every day I get better. Reading is the best thing I learn at school.",
+],
+home: [
+  "My home is a good place. I have my own room. My bed is soft and warm. I have books and toys. In the morning I eat breakfast with my family. We talk and laugh. At night we watch something together. Then I go to bed. My home is safe and warm. I feel good when I am at home. I love my home.",
+],
+morning: [
+  "In the morning I wake up. I look out the window. The sun is up. I get out of bed. I wash my face. I put on my clothes. Then I eat breakfast. I have toast and a drink. I pack my bag. I put in my books. Then I go to school. The walk to school is nice in the morning. The birds are singing.",
+],
+bedtime: [
+  "At night I get ready for bed. I wash my face and brush my teeth. I put on my pyjamas. I get into bed. My bed is soft and warm. I read a book. The story is good. Then I close my eyes. I can hear the wind outside. It is quiet and dark. I think about the good things that happened today. Then I fall asleep.",
+],
+
+// ── FEELINGS & PERSONAL ──
+feelings: [
+  "Some days I feel happy. I smile and laugh. Some days I feel sad. I sit and I am quiet. Some days I feel angry. I need to take a deep breath. All feelings are ok. It is ok to feel things. I can talk to someone I trust. I can go for a walk. I can draw or read. Feelings come and go. I am ok.",
+  "When I feel worried I take a deep breath. I breathe in and I breathe out. I think about what is good in my day. I think about the things I like. I know that the worried feeling will go away. It always does. I can ask for help when I need it. That is a brave thing to do. I am brave.",
+],
+brave: [
+  "Being brave does not mean you are not scared. It means you try even when things are hard. I try hard things at school. Sometimes I get it wrong. That is ok. I try again. When something is new I feel scared. But I take a breath and I try. Each time I try I get better. Being brave makes me strong.",
+],
+friendship: [
+  "A good friend is kind. A good friend listens. A good friend helps you when you are sad. A good friend plays with you. I have a friend at school. We like the same things. We play together at lunch. We laugh and have fun. Sometimes we do not agree. But we talk and work it out. Good friends are very important.",
+],
+trying_hard: [
+  "Sometimes things are hard. I do not get it right at first. But I do not give up. I try again and again. My teacher says I am doing well. Every time I try I learn something new. When I get it right I feel very proud. Hard things get easier when you keep trying. I know I can do it if I try.",
+],
+
+// ── SEASONS ──
+summer: [
+  "Summer is my favourite time. The days are long and warm. The sun is up early. I like to play outside. We go to the beach. The water is cool and I swim and jump in the waves. I eat ice cream. It is cold and sweet. In summer I stay up a little later. We sit outside at night. The sky is full of stars.",
+],
+winter: [
+  "Winter is cold. I put on my coat and scarf. I drink hot soup to get warm. The trees have no leaves. The ground is cold and hard. On some mornings there is frost. It makes the grass look white. I can see my breath in the cold air. I like to sit by the fire. It is warm and bright. Winter nights are long.",
+],
+autumn: [
+  "In autumn the leaves change colour. They turn red and gold and brown. They fall from the trees. I walk through the leaves. They make a sound under my feet. The air gets cold. I put on a jacket. The days get shorter. Animals start to get ready for winter. Autumn is a beautiful time of year. I like the colours of the leaves.",
+],
+spring: [
+  "Spring comes after winter. The air gets warm again. New leaves grow on the trees. Flowers start to bloom. Birds come back and sing. Baby animals are born in spring. Lambs run in the fields. Rain falls and the grass turns green. I like to go outside in spring. Everything looks new. Spring is a time for new things to start.",
+],
+
+// ── FUN & CREATIVE ──
+robots: [
+  "Robots are machines that can do work. Some robots build cars in a factory. Some robots help at home. A robot can be big or small. Robots do what they are told. A person programs a robot. That means they tell it what to do. Some robots look like people. Some look like arms or boxes. One day there may be many more robots in our world.",
+],
+magic: [
+  "Magic is fun to think about. In stories magic can do anything. A wizard can make fire. A fairy can fly and grant wishes. Magic wands and spells help in stories. But real magic is different. When you work hard and get better at something it feels like magic. When you help someone and they feel good that is magic too. Real magic is in you.",
+],
+dragons: [
+  "Dragons are not real but they are fun to read about. In stories a dragon is very big. It has wings and can fly. It breathes fire. Some dragons live in a cave on a hill. Some dragons are mean. Some dragons are kind and help people. I like to read stories about dragons. I think it would be amazing to ride a dragon through the sky.",
+],
+superheroes: [
+  "Superheroes have special powers. Some can fly. Some are very strong. Some can run very fast. They help people who are in trouble. They are brave and kind. They do not give up. In real life we have heroes too. Doctors help sick people. Firefighters run into burning buildings. Teachers help children learn. Real heroes work hard to help others.",
+],
+art: [
+  "I like to draw and paint. I use pencils and colours. I draw things I like. I draw animals and people and places. When I paint I mix colours together. Red and blue make purple. Yellow and blue make green. I like to make things with my hands. I can draw a picture of my dog or the sky. Making art makes me feel calm and happy.",
+],
+music: [
+  "Music is made of sounds. You can make music by singing. You can play a drum or a guitar. Music can make you feel happy. Music can make you feel calm. I like to listen to music when I am reading or drawing. Some music is fast and loud. Some music is slow and soft. I like to clap along. Music is something everyone can enjoy.",
+],
+reading: [
+  "Reading opens up the whole world. When I read a book I can go anywhere. I can fly in space. I can meet new friends. I can learn about animals or history or how things work. Reading can be hard at first. But every day I get better. I sound out the words. I work out what they mean. The more I read the easier it gets.",
+],
+
+// ── SOCIAL STORIES (teacher-generated) ──
+social_calm: [
+  "Some days at school things feel hard. There is too much noise. I do not know what comes next. My body feels tight. When this happens I can take a big breath. I breathe in slowly. I breathe out slowly. I can ask to go to my calm space. That is a safe place. I know that I am ok. Things will get better. I am brave and strong.",
+  "When I feel angry I stop. I do not act on the angry feeling right away. I take three deep breaths. I think about what I need. I can say I am angry with my words. That is ok. I do not hurt people or break things. I know that the angry feeling will pass. I am in control of what I do. I am doing well.",
+],
+social_school: [
+  "Today is a school day. I know what will happen. First I will go to class. We will read and write. Then I will have lunch. After lunch we do more work. Then school is done. I can do this. I have done it before. If something feels too hard I can ask for help. My teacher will help me. I am ready for today.",
+  "I go to school every day. Some days I do not want to go. That is ok. Everyone has days like that. I take a breath and I go. When I get there I see my teacher. She is kind. I sit at my desk. I do my best. Lunchtime I eat and rest. Then the day is over. I did it. I feel proud of myself.",
+],
+social_new: [
+  "Sometimes things are new and different. New things can feel hard. I do not know what will happen. That makes me feel worried. But I take a breath and I try. New things get easier when you do them. The first time is the hardest. After that it is better. I have tried new things before and it was ok. I can do it this time too.",
+],
+social_feelings: [
+  "I have many feelings every day. Happy is a good feeling. I get happy when I do something I like. Sad is a hard feeling. I get sad when things go wrong. Angry is a big feeling. I get angry when things are not fair. All feelings are ok. I can feel them. But I choose how I act. I can use my words. I am learning to do that.",
+],
+social_break: [
+  "When things get too much I can take a break. A break is not bad. A break helps my brain. I can go to my calm space. I can sit quietly. I can drink some water. I can think about something I love. After my break I feel better. Then I can try again. Taking a break is a brave and smart thing to do. I do it well.",
+],
+// ── ADDITIONAL TOPICS ──
+butterflies: [
+  "A butterfly starts as an egg. The egg is very small. Out comes a caterpillar. It eats leaves all day. Then it makes a shell around itself. This is called a chrysalis. Inside the chrysalis it changes. One day it comes out as a butterfly. It has beautiful wings. The butterfly flies from flower to flower. It drinks sweet nectar. A butterfly is a wonderful thing.",
+],
+bees: [
+  "Bees are very important. They fly from flower to flower. They carry pollen. This helps plants grow fruit. Bees live in a hive. There are many bees in one hive. They make honey. Honey is sweet and good to eat. The queen bee lays all the eggs. Worker bees look after the hive. Without bees we would not have much food. Bees do a big job.",
+],
+ants: [
+  "Ants are very small but very strong. They can carry things much bigger than themselves. Ants live in a nest under the ground. There can be many thousands of ants in one nest. Ants work together. Some ants find food. Some ants look after the eggs. Some ants guard the nest. Every ant has a job. Ants are some of the hardest workers in the world.",
+],
+lions: [
+  "A lion is a big and strong animal. It lives in Africa on the open plains. Lions have golden fur and a big mane. A lion can roar very loud. You can hear it from far away. Lions hunt at night. They live in a group called a pride. The females do most of the hunting. Baby lions are called cubs. Cubs play and learn from the adults.",
+],
+elephants: [
+  "Elephants are the biggest animals on land. They have a long trunk. They use their trunk to drink and eat. Elephants have big ears and thick grey skin. They live in groups. An older female leads the group. Baby elephants stay close to their mothers. Elephants remember things for a very long time. They help each other when things are hard. Elephants are very clever animals.",
+],
+turtles: [
+  "Turtles have lived on earth for a very long time. They have a hard shell on their back. The shell keeps them safe. Turtles live near water. Some turtles live in the sea. They swim very well. Sea turtles come to the beach to lay their eggs. Baby turtles hatch from the eggs. They run to the sea as fast as they can. Turtles can live for a very long time.",
+],
+wolves: [
+  "Wolves live in forests and cold places. They live in a group called a pack. The pack hunts together. They can run very fast for a long time. Wolves howl to talk to each other. You can hear them at night. Baby wolves are called pups. They play and learn in the den. Wolves help keep the forest healthy. They are strong and clever animals.",
+],
+running: [
+  "I like to run. I put on my shoes and go outside. I start slow and then go faster. Running makes my heart beat fast. I breathe in and out. My legs feel strong. I run around the park. The wind is in my face. When I stop I feel very good. Running is something I can always do. All I need is my legs and some space.",
+],
+gymnastics: [
+  "Gymnastics is a sport where you move your body in amazing ways. You can do flips and rolls and handstands. You need to be strong and balanced. You practise a lot to get better. At first things are hard. But you keep trying. Gymnasts work very hard every day. They learn to land on their feet. Gymnastics is fun to watch and fun to do.",
+],
+birthday: [
+  "Today is my birthday. I feel very happy. My family sings to me. There is a big cake. It has candles on top. I make a wish. I blow out all the candles. Everyone claps. I open my presents. They are wrapped in bright paper. Inside there are things I love. We eat cake and play games. A birthday is a very good day.",
+],
+camping: [
+  "I like to go camping. We drive to a place in the bush. We put up the tent. Inside the tent I have a sleeping bag. At night we make a fire. We cook food on the fire. The stars are very bright. I look up at the sky. I can see so many stars. We tell stories. Then we go to sleep in the tent. In the morning birds wake us up.",
+],
+beach2: [
+  "I love going to the beach. The sand is warm under my feet. I run to the water. The waves come in. I jump over them. The water is cold at first. Then it feels good. I dig in the sand. I make a big hole. I look for shells. I find a big one. I can hear the sea in it. The beach is one of my best places.",
+],
+library: [
+  "I like to go to the library. It is quiet and cool inside. There are books everywhere. I walk along the rows. I look at the covers. I find one I like. I sit down in a big chair and start to read. The story takes me far away. When I leave I take the book home with me. I can not wait to read more. The library is a good place.",
+],
+volcanoes: [
+  "A volcano is a mountain with hot rock inside. Sometimes the hot rock comes out. This is called an eruption. The hot rock is called lava. Lava flows down the side of the mountain. It is very hot and bright red. Ash and smoke go up into the sky. Volcanoes can be dangerous. But when the lava cools it makes new land. There are volcanoes in many places on earth.",
+],
+rivers: [
+  "Rivers start in the mountains. Water flows down the hill. It gets bigger and bigger. It flows over rocks and through valleys. Fish swim in rivers. Birds drink from the banks. Animals come to the river to drink. Rivers carry water to the sea. People drink water from rivers. Farmers use river water for their crops. Rivers are very important for all living things.",
+],
+deserts: [
+  "A desert is a very dry place. It does not rain much there. In the day it is very hot. At night it gets very cold. Some deserts have sand dunes. Others have rocks and dust. Animals live in the desert. They find ways to get water. Camels can go a long time without water. Small lizards live under rocks. Deserts are amazing places that are full of life.",
+],
+rainforest: [
+  "A rainforest is a wet forest. It rains there almost every day. The trees are very tall. They grow close together. The leaves block the sun. It is dark and cool down below. Many animals live there. Monkeys swing in the trees. Bright birds fly around. Frogs live near the streams. There are millions of insects. A rainforest is full of life. We need to look after them.",
+],
+lego: [
+  "I love building with LEGO. I tip out all the pieces. I look at the colours. I start to build. First I make the base. Then I add walls. Then a roof. I make a door and windows. When it is done I look at what I made. Then I take it apart and make something new. LEGO lets me make anything I can think of. Building is so much fun.",
+],
+puzzle: [
+  "I like doing puzzles. I tip out all the pieces on the table. First I find the edges. I put them all together to make the frame. Then I look at the colours and shapes. I try each piece. Some fit and some do not. I do not give up. Slowly the picture comes together. When the last piece goes in I feel very good. I did it.",
+],
+drawing: [
+  "I like to draw. I get my pencils and paper. I start with a light line. Then I add more. I draw an animal or a place. I use different colours. Some parts are dark. Some parts are light. When it is done I look at my drawing. I feel proud. Drawing helps me think. When I am worried I draw and it helps. Drawing is my favourite thing to do.",
+],
+social_proud: [
+  "Today I did something hard. I tried my best. It was not easy. But I kept going. At the end I felt very proud of myself. Being proud is a warm happy feeling. It comes from inside. My teacher said I did well. That felt good too. When I work hard and try my best I always feel proud. I want to feel proud again. I will keep trying.",
+],
+social_asking: [
+  "When I need help I can ask. I do not have to do hard things alone. I can say I need help please. My teacher will help me. My family will help me. Asking for help is not bad. It is very smart. Even grown ups ask for help. When I ask for help things get easier. I know that I can always ask. Someone will always help me.",
+],
+social_waiting: [
+  "Sometimes I have to wait. Waiting can feel hard. I want things to happen now. But some things take time. When I have to wait I take a breath. I think of something I like. I look around at what is near me. I think about what comes next. The wait always ends. And when it does the thing I was waiting for is there. Waiting is ok.",
+],
+social_mistakes: [
+  "Sometimes I make a mistake. That is ok. Everyone makes mistakes. A mistake means I tried. I can learn from it. I look at what went wrong. I think about what I can do next time. Then I try again. Making a mistake does not mean I am bad. It means I am learning. I am kind to myself when I make a mistake. Then I try again.",
+],
+};
+
+// Topic synonyms/aliases
+const TOPIC_ALIASES = {
+  dog: 'dogs', puppy: 'dogs', puppies: 'dogs',
+  cat: 'cats', kitten: 'cats', kittens: 'cats',
+  shark: 'sharks', 'great white': 'sharks',
+  bird: 'birds', penguin: 'birds', penguins: 'birds',
+  horse: 'horses', pony: 'horses',
+  frog: 'frogs', frog: 'frogs',
+  dinosaur: 'dinosaurs', dino: 'dinosaurs', dinos: 'dinosaurs',
+  'fish': 'fish',
+  'farm': 'farm_animals', 'farm animal': 'farm_animals', 'farm animals': 'farm_animals',
+  planet: 'planets', 'solar system': 'planets',
+  rocket: 'rockets', astronaut: 'rockets', astronauts: 'rockets',
+  star: 'stars',
+  'video game': 'video_games', 'video games': 'video_games', gaming: 'video_games',
+  train: 'trains',
+  car: 'cars', vehicle: 'cars',
+  plane: 'planes', airplane: 'planes', aeroplane: 'planes',
+  boat: 'boats', ship: 'boats',
+  bike: 'bikes', bicycle: 'bikes', cycling: 'bikes',
+  robot: 'robots',
+  dragon: 'dragons',
+  superhero: 'superheroes', 'super hero': 'superheroes',
+  ocean: 'ocean', sea: 'ocean', beach: 'ocean',
+  tree: 'trees', forest: 'trees',
+  flower: 'flowers', garden: 'flowers',
+  rock: 'rocks', stone: 'rocks',
+  rain: 'rain',
+  snow: 'snow',
+  weather: 'weather',
+  food: 'food', fruit: 'food', eating: 'food',
+  cooking: 'cooking', bake: 'cooking', baking: 'cooking',
+  school: 'school',
+  home: 'home', house: 'home',
+  morning: 'morning',
+  bedtime: 'bedtime', night: 'bedtime', sleep: 'bedtime',
+  feelings: 'feelings', emotion: 'feelings', emotions: 'feelings',
+  brave: 'brave', courage: 'brave',
+  friend: 'friendship', friends: 'friendship', friendship: 'friendship',
+  summer: 'summer',
+  winter: 'winter',
+  autumn: 'autumn', fall: 'autumn',
+  spring: 'spring',
+  art: 'art', drawing: 'art', painting: 'art',
+  music: 'music', song: 'music', singing: 'music',
+  reading: 'reading', books: 'reading',
+  magic: 'magic', wizard: 'magic',
+  space: 'space',
+  football: 'football', soccer: 'football',
+  swimming: 'swimming', swim: 'swimming',
+  basketball: 'basketball',
+  cricket: 'cricket',
+  minecraft: 'minecraft',
+  basketball: 'basketball',
+
+  butterfly: 'butterflies', butterflies: 'butterflies',
+  bee: 'bees', bees: 'bees', honey: 'bees',
+  ant: 'ants', ants: 'ants',
+  lion: 'lions', lions: 'lions',
+  elephant: 'elephants', elephants: 'elephants',
+  turtle: 'turtles', turtles: 'turtles',
+  wolf: 'wolves', wolves: 'wolves',
+  run: 'running', running: 'running', jogging: 'running',
+  gymnastic: 'gymnastics', gymnastics: 'gymnastics',
+  birthday: 'birthday', party: 'birthday',
+  camping: 'camping', camp: 'camping',
+  beach: 'beach', sand: 'beach', surf: 'beach',
+  library: 'library', books: 'library',
+  volcano: 'volcanoes', volcanoes: 'volcanoes', lava: 'volcanoes',
+  river: 'rivers', rivers: 'rivers',
+  desert: 'deserts', deserts: 'deserts',
+  rainforest: 'rainforest', jungle: 'rainforest',
+  lego: 'lego', 'lego bricks': 'lego',
+  puzzle: 'puzzle', puzzles: 'puzzle',
+  drawing: 'drawing', draw: 'drawing', sketch: 'drawing',
+};
+
+// ══════════════════════════════════════════════
+//  INAPPROPRIATE TOPIC FILTER
+// ══════════════════════════════════════════════
+const BLOCKED_TERMS = [
+  'brainrot','brain rot','skibidi','rizz','sigma','gyatt','ohio','bussin','no cap',
+  'sussy','sus','among us','ligma','sugma','deez','grind','clap','thug','gang',
+  'kill','killing','murder','death','dead','die','dying','blood','gore','violent','violence',
+  'gun','guns','knife','knives','weapon','weapons','bomb','drugs','drug','alcohol','beer','wine',
+  'sex','sexy','porn','nude','naked','boob','breast','penis','vagina','butt','ass',
+  'stupid','idiot','dumb','moron','hate','racist','racism',
+  'tiktok','youtube','instagram','snapchat','twitch',
+  'hell','damn','shit','crap','fuck','bitch','bastard',
+  'horror','scary','terrifying','nightmare','devil','demon','ghost','zombie','creepy',
+  'fight','fighting','punch','kick someone','hit someone','bully','bullying',
+];
+
+function isBlocked(topic) {
+  const t = topic.toLowerCase().trim();
+  return BLOCKED_TERMS.some(term => t.includes(term));
+}
+
+// ══════════════════════════════════════════════
+//  BADGE DEFINITIONS
+// ══════════════════════════════════════════════
+const ALL_BADGES = [
+  { id:'first_read',    icon:'📖', name:'First Read',    desc:'Complete your first session' },
+  { id:'five_sessions', icon:'⭐', name:'5 Sessions',    desc:'Read 5 times' },
+  { id:'ten_sessions',  icon:'🌟', name:'10 Sessions',   desc:'Read 10 times' },
+  { id:'perfect_10',    icon:'🎯', name:'10 Words!',     desc:'Get 10 words correct in one go' },
+  { id:'perfect_50',    icon:'🏅', name:'50 Words!',     desc:'Get 50 words correct in one session' },
+  { id:'century',       icon:'💯', name:'100 Total',     desc:'100+ total words read across all sessions' },
+  { id:'streak_3',      icon:'🔥', name:'3-Day Streak',  desc:'Read 3 days in a row' },
+  { id:'level5',        icon:'🚀', name:'Level 5',       desc:'Reach level 5' },
+  { id:'topic_fan',     icon:'🎨', name:'Topic Fan',     desc:'Read about 5 different topics' },
+  { id:'social',        icon:'💬', name:'Story Time',    desc:'Read a surprise social story' },
+  { id:'no_struggle',   icon:'✨', name:'Clean Read',    desc:'Submit a session with no struggle words' },
+  { id:'comeback',      icon:'💪', name:'Comeback Kid',  desc:'Beat your previous best score' },
+];
+
+// ══════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════
+let state = loadState();
+let currentWordCount = 0;
+let currentTopic = '';
+const topicsReadSet = new Set();
+
+function loadState() {
+  try {
+    const s = localStorage.getItem('ww2_state');
+    return s ? JSON.parse(s) : defaultState();
+  } catch(e) { return defaultState(); }
+}
+function defaultState() {
+  return {
+    xp:0, level:1, sessions:[], badges:[], streak:0,
+    lastDate:'', totalWords:0, blockedAttempts:[],
+    struggleWords:[], studentName:'Alex',
+  };
+}
+function saveState() {
+  localStorage.setItem('ww2_state', JSON.stringify(state));
+  // Firebase write is called explicitly after bulk changes, not here, to avoid loops
+}
+
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
+function init() {
+  updateStreak();
+  renderHeader();
+  renderHomeStats();
+  renderBadges();
+  renderLeaderboard();
+  const name = state.studentName || 'Alex';
+  document.getElementById('greetingTxt').textContent = greeting(name);
+  showStruggleNotice();
+  // Auto-connect Firebase if previously configured
+  const fbCfg = loadFbConfig();
+  if (fbCfg) { try { initFirebase(fbCfg); } catch(e){ console.warn("FB auto-connect failed", e); } }
+}
+
+function greeting(name) {
+  const h = new Date().getHours();
+  const g = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  return `${g}, ${name}! 👋`;
+}
+
+function updateStreak() {
+  const today = new Date().toDateString();
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  if (state.lastDate === yesterday) {
+    // streak continues — will be incremented when session recorded
+  } else if (state.lastDate !== today && state.lastDate !== '') {
+    state.streak = 0;
+  }
+}
+
+function renderHeader() {
+  const pct = state.xp % 100;
+  document.getElementById('xpFill').style.width = pct + '%';
+  document.getElementById('lvlBadge').textContent = `Lv ${state.level}`;
+  document.getElementById('streakPill').textContent = `🔥 ${state.streak} day${state.streak !== 1 ? 's' : ''}`;
+}
+
+function renderHomeStats() {
+  const best = state.sessions.length ? Math.max(...state.sessions.map(s => s.correct)) : 0;
+  document.getElementById('sTotal').textContent = state.totalWords || 0;
+  document.getElementById('sBest').textContent = best;
+  document.getElementById('sSessions').textContent = state.sessions.length;
+  document.getElementById('sLevel').textContent = state.level;
+}
+
+function showStruggleNotice() {
+  const sw = state.struggleWords || [];
+  const notice = document.getElementById('struggleNotice');
+  const list = document.getElementById('strugglerList');
+  if (sw.length) {
+    list.textContent = sw.join(', ');
+    notice.style.display = 'block';
+  } else {
+    notice.style.display = 'none';
+  }
+}
+
+// ══════════════════════════════════════════════
+//  SCREEN NAV
+// ══════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ══════════════════════════════════════════════
+//  TOPIC LAUNCH
+// ══════════════════════════════════════════════
+function quickTopic(t) {
+  document.getElementById('topicInput').value = t;
+  launchTopic();
+}
+
+function launchTopic() {
+  const raw = document.getElementById('topicInput').value.trim();
+  if (!raw) { showToast('Please type a topic first 😊'); return; }
+  if (isBlocked(raw)) {
+    logBlockedAttempt(raw);
+    openPopup('blockedPopup');
+    document.getElementById('topicInput').value = '';
+    return;
+  }
+  currentTopic = raw;
+  document.getElementById('topicInput').value = '';
+  showScreen('readingScreen');
+  displayStory(findStory(raw), raw);
+  topicsReadSet.add(raw.toLowerCase());
+  if (topicsReadSet.size >= 5) awardBadge('topic_fan');
+}
+
+function logBlockedAttempt(term) {
+  state.blockedAttempts = state.blockedAttempts || [];
+  state.blockedAttempts.push({
+    term: term,
+    datetime: new Date().toLocaleString('en-AU'),
+  });
+  saveState();
+}
+
+function findStory(raw) {
+  const t = raw.toLowerCase().trim();
+  // direct key match
+  if (STORIES[t]) return pickStory(STORIES[t]);
+  // alias match
+  const alias = TOPIC_ALIASES[t];
+  if (alias && STORIES[alias]) return pickStory(STORIES[alias]);
+  // partial match
+  for (const key of Object.keys(STORIES)) {
+    if (t.includes(key) || key.includes(t)) return pickStory(STORIES[key]);
+  }
+  for (const [alias, key] of Object.entries(TOPIC_ALIASES)) {
+    if (t.includes(alias) || alias.includes(t)) {
+      if (STORIES[key]) return pickStory(STORIES[key]);
+    }
+  }
+  // fallback — generic
+  return pickStory(STORIES['reading']);
+}
+
+function pickStory(arr) {
+  // avoid recently used
+  const idx = Math.floor(Math.random() * arr.length);
+  return arr[idx];
+}
+
+function launchSocialStory() {
+  currentTopic = 'Surprise Story';
+  showScreen('readingScreen');
+  const socialKeys = ['social_calm','social_school','social_new','social_feelings','social_break'];
+  const key = socialKeys[Math.floor(Math.random() * socialKeys.length)];
+  displayStory(pickStory(STORIES[key]), 'Surprise Story');
+  awardBadge('social');
+}
+
+// ══════════════════════════════════════════════
+//  INJECT STRUGGLE WORDS
+// ══════════════════════════════════════════════
+function injectStruggleWords(text) {
+  const sw = (state.struggleWords || []).filter(w => w.length > 0);
+  if (!sw.length) return text;
+  // Weave the struggle words naturally into the text at the sentence level
+  const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+  // Insert at a random position in the middle of the text
+  const insertAt = Math.max(1, Math.floor(sentences.length / 2));
+  const extras = sw.map(w => `I see the word ${w} and I can read it.`).join(' ');
+  sentences.splice(insertAt, 0, ' ' + extras);
+  return sentences.join('');
+}
+
+// ══════════════════════════════════════════════
+//  SYLLABLE HELPERS
+// ══════════════════════════════════════════════
+function countSyllables(word) {
+  word = word.toLowerCase().replace(/[^a-z]/g,'');
+  if (word.length <= 3) return 1;
+  word = word.replace(/(?:[^laeiouy]es|[^laeiouy]ed|[^laeiouy]e)$/, '');
+  const m = word.match(/[aeiouy]{1,2}/g);
+  return Math.max(1, m ? m.length : 1);
+}
+
+function splitSyllables(word) {
+  const clean = word.replace(/[^a-zA-Z]/g,'');
+  if (countSyllables(clean.toLowerCase()) < 2) return [clean];
+  const vowels = 'aeiouyAEIOUY';
+  const isV = c => vowels.includes(c);
+  let chunks = [];
+  let chunk = '';
+  const ch = clean.split('');
+  for (let i = 0; i < ch.length; i++) {
+    chunk += ch[i];
+    if (i < ch.length - 2 && isV(ch[i]) && !isV(ch[i+1]) && isV(ch[i+2])) {
+      chunks.push(chunk); chunk = '';
+    } else if (i < ch.length - 3 && isV(ch[i]) && !isV(ch[i+1]) && !isV(ch[i+2]) && isV(ch[i+3])) {
+      chunk += ch[i+1]; i++;
+      chunks.push(chunk); chunk = '';
+    }
+  }
+  if (chunk) chunks.push(chunk);
+  return chunks.length > 1 ? chunks : [clean];
+}
+
+function showSyllables(word) {
+  const parts = splitSyllables(word);
+  const disp = document.getElementById('sylDisplay');
+  disp.innerHTML = parts.map((p, i) =>
+    (i > 0 ? '<span class="syl-dot">·</span>' : '') +
+    `<span class="syl-chunk">${p}</span>`
+  ).join('');
+  openPopup('sylPopup');
+}
+
+function openPopup(id) { document.getElementById(id).classList.add('open'); }
+function closePopup(id) { document.getElementById(id).classList.remove('open'); }
+
+// ══════════════════════════════════════════════
+//  RENDER READING
+// ══════════════════════════════════════════════
+function displayStory(rawText, topic) {
+  const text = injectStruggleWords(rawText);
+  const words = text.split(/(\s+)/);
+  currentWordCount = text.split(/\s+/).filter(w => w.trim()).length;
+
+  const prev = state.sessions.length ? Math.max(...state.sessions.map(s=>s.correct)) : 0;
+
+  const wordSpans = words.map(token => {
+    if (/^\s+$/.test(token)) return token;
+    const clean = token.replace(/[^a-zA-Z]/g,'').toLowerCase();
+    if (!clean) return token;
+    if (countSyllables(clean) >= 2) {
+      return `<span class="word multisyl" onclick="showSyllables('${clean}')" title="Click to break into parts">${token}</span>`;
+    }
+    return `<span class="word">${token}</span>`;
+  }).join('');
+
+  document.getElementById('readingContent').innerHTML = `
+    ${prev > 0 ? `<div style="background:#e8f5e9;border-radius:12px;padding:11px 17px;margin-bottom:12px;font-weight:800;color:#2E7D32;font-size:.9rem;">
+      🏆 Score to beat: <strong>${prev} words correct</strong>
+    </div>` : ''}
+    <div class="reading-card">${wordSpans}</div>
+    <div class="reading-hint">💡 <strong>Blue underlined words</strong> can be tapped to see them broken into parts!</div>
+    <div class="reading-controls">
+      <h3>How many words did ${state.studentName || 'you'} read correctly?</h3>
+      <div class="score-row">
+        <label>Words correct:</label>
+        <input type="number" id="wordsCorrect" min="0" max="${currentWordCount}" value="0"/>
+        <span class="total-w">out of ${currentWordCount} words</span>
+        <button class="submit-btn" onclick="submitScore('${topic.replace(/'/g,"\\'")}')" >Submit ✅</button>
+      </div>
+      <div class="struggle-input-wrap">
+        <label>📝 Teacher: words the student struggled with this session</label>
+        <p>Type any words that were hard to read, separated by commas. They will appear in the next story.</p>
+        <input type="text" id="struggleInput" placeholder="e.g. because, around, always"/>
+      </div>
+    </div>`;
+}
+
+// ══════════════════════════════════════════════
+//  SCORE SUBMISSION
+// ══════════════════════════════════════════════
+function submitScore(topic) {
+  const input = document.getElementById('wordsCorrect');
+  const correct = Math.max(0, Math.min(currentWordCount, parseInt(input.value) || 0));
+  const struggleRaw = document.getElementById('struggleInput').value.trim();
+  const struggleWords = struggleRaw
+    ? struggleRaw.split(',').map(w => w.trim().toLowerCase()).filter(w => w.length)
+    : [];
+
+  const prev = state.sessions.length ? Math.max(...state.sessions.map(s=>s.correct)) : 0;
+  const isNewBest = correct > prev;
+  const today = new Date().toDateString();
+
+  // Update streak
+  if (state.lastDate !== today) {
+    const yesterday = new Date(Date.now()-86400000).toDateString();
+    if (state.lastDate === yesterday) state.streak = (state.streak||0)+1;
+    else state.streak = 1;
+    state.lastDate = today;
+  }
+
+  state.sessions.push({
+    date: new Date().toLocaleDateString('en-AU'),
+    topic,
+    correct,
+    total: currentWordCount,
+    struggleWords,
+    ts: Date.now(),
+  });
+  state.totalWords = (state.totalWords||0) + correct;
+
+  // Store struggle words for next session
+  state.struggleWords = struggleWords;
+
+  // XP & level
+  const xpGained = correct * 2 + (isNewBest ? 50 : 0) + (state.streak > 1 ? 10 : 0);
+  state.xp = (state.xp||0) + xpGained;
+  state.level = Math.floor(state.xp/100) + 1;
+
+  saveState();
+  fbWrite();
+  checkBadges(correct, isNewBest, struggleWords);
+  renderHeader();
+  renderHomeStats();
+  renderLeaderboard();
+  showStruggleNotice();
+
+  if (isNewBest && prev > 0) {
+    confetti();
+    showToast(`🎉 NEW HIGH SCORE! ${correct} words! +${xpGained} XP!`);
+  } else if (correct > 0) {
+    showToast(`Well done! ${correct} words! +${xpGained} XP 🌟`);
+  } else {
+    showToast(`Session saved. Keep going! 💪`);
+  }
+
+  setTimeout(() => showScreen('homeScreen'), 2400);
+}
+
+// ══════════════════════════════════════════════
+//  BADGES
+// ══════════════════════════════════════════════
+function checkBadges(correct, isNewBest, struggleWords) {
+  if (state.sessions.length === 1) awardBadge('first_read');
+  if (state.sessions.length >= 5)  awardBadge('five_sessions');
+  if (state.sessions.length >= 10) awardBadge('ten_sessions');
+  if (correct >= 10) awardBadge('perfect_10');
+  if (correct >= 50) awardBadge('perfect_50');
+  if (state.totalWords >= 100) awardBadge('century');
+  if (state.streak >= 3) awardBadge('streak_3');
+  if (state.level >= 5)  awardBadge('level5');
+  if (isNewBest && state.sessions.length > 1) awardBadge('comeback');
+  if (!struggleWords.length && correct > 0) awardBadge('no_struggle');
+  renderBadges();
+}
+
+function awardBadge(id) {
+  if (!state.badges.includes(id)) {
+    state.badges.push(id);
+    saveState();
+    const b = ALL_BADGES.find(x=>x.id===id);
+    if (b) setTimeout(() => showToast(`🎖️ New badge unlocked: ${b.name}!`), 1200);
+  }
+}
+
+function renderBadges() {
+  const grid = document.getElementById('badgeGrid');
+  if (!grid) return;
+  grid.innerHTML = ALL_BADGES.map(b => `
+    <div class="badge ${state.badges.includes(b.id)?'earned':''}" title="${b.desc}">
+      <div class="badge-icon">${b.icon}</div>
+      <div class="badge-name">${b.name}</div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════
+//  LEADERBOARD
+// ══════════════════════════════════════════════
+function renderLeaderboard() {
+  const hdr = document.getElementById('lbHdr');
+  if (hdr) hdr.textContent = `🏆 ${state.studentName||'Alex'}'s High Scores`;
+  const list = document.getElementById('lbList');
+  if (!list) return;
+  if (!state.sessions.length) {
+    list.innerHTML = '<div class="lb-empty">No scores yet — go read something! 📖</div>';
+    return;
+  }
+  const sorted = [...state.sessions].sort((a,b)=>b.correct-a.correct).slice(0,10);
+  list.innerHTML = sorted.map((s,i) => `
+    <div class="lb-row">
+      <div class="lb-rank">${i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}`}</div>
+      <div class="lb-name">${state.studentName||'Alex'}</div>
+      <div class="lb-meta">${s.topic} · ${s.date}</div>
+      <div class="lb-score">${s.correct} / ${s.total}</div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════
+//  TEACHER PANEL
+// ══════════════════════════════════════════════
+function renderTeacherPanel() {
+  const sessions = state.sessions || [];
+  document.getElementById('tTotal').textContent = state.totalWords||0;
+  document.getElementById('tSessions').textContent = sessions.length;
+  const best = sessions.length ? Math.max(...sessions.map(s=>s.correct)) : 0;
+  const avg  = sessions.length ? Math.round(sessions.reduce((a,s)=>a+s.correct,0)/sessions.length) : 0;
+  document.getElementById('tBest').textContent = best;
+  document.getElementById('tAvg').textContent = avg;
+
+  // Session log
+  const tbody = document.getElementById('sessionLog');
+  if (!sessions.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#bbb;padding:18px">No sessions yet</td></tr>';
+  } else {
+    tbody.innerHTML = [...sessions].reverse().map((s,i) => {
+      const swTags = (s.struggleWords||[]).length
+        ? s.struggleWords.map(w=>`<span class="struggle-tag">${w}</span>`).join('')
+        : '<span style="color:#bbb;font-size:.8rem">—</span>';
+      return `<tr>
+        <td>${sessions.length-i}</td>
+        <td>${s.date}</td>
+        <td>${s.topic}</td>
+        <td style="font-weight:800;color:var(--grass)">${s.correct}</td>
+        <td>${s.total}</td>
+        <td>${Math.round(s.correct/s.total*100)}%</td>
+        <td>${swTags}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Blocked log
+  const blocked = state.blockedAttempts || [];
+  const btbody = document.getElementById('blockedLog');
+  const bempty = document.getElementById('blockedEmpty');
+  if (!blocked.length) {
+    btbody.innerHTML = '';
+    bempty.style.display = 'block';
+  } else {
+    bempty.style.display = 'none';
+    btbody.innerHTML = [...blocked].reverse().map((b,i) => `
+      <tr>
+        <td>${blocked.length-i}</td>
+        <td>${b.datetime}</td>
+        <td><strong style="color:#B71C1C">${b.term}</strong></td>
+      </tr>`).join('');
+  }
+
+  // Current struggle words
+  const sw = state.struggleWords||[];
+  const swDiv = document.getElementById('currentStruggleWords');
+  if (swDiv) swDiv.textContent = sw.length ? sw.join(', ') : 'None queued.';
+
+  // Pre-fill name
+  const nameField = document.getElementById('studentNameInput');
+  if (nameField) nameField.value = state.studentName || 'Alex';
+}
+
+// ══════════════════════════════════════════════
+//  TEACHER AUTH
+// ══════════════════════════════════════════════
+const TEACHER_USER = 'teacher';
+const TEACHER_PASS = 'Riley26';
+
+function tryLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value.trim();
+  if (u === TEACHER_USER && p === TEACHER_PASS) {
+    document.getElementById('loginErr').textContent = '';
+    document.getElementById('loginUser').value = '';
+    document.getElementById('loginPass').value = '';
+    renderTeacherPanel();
+    prefillFbFields();
+    showScreen('teacherScreen');
+  } else {
+    document.getElementById('loginErr').textContent = 'Incorrect username or password.';
+  }
+}
+
+function saveStudentName() {
+  const val = document.getElementById('studentNameInput').value.trim();
+  if (!val) return;
+  state.studentName = val;
+  saveState();
+  document.getElementById('greetingTxt').textContent = greeting(val);
+  renderLeaderboard();
+  const ns = document.getElementById('nameSaved');
+  ns.style.display = 'inline';
+  setTimeout(()=>ns.style.display='none', 2000);
+  showToast(`Name updated to ${val}! ✅`);
+}
+
+function clearStruggleWords() {
+  state.struggleWords = [];
+  saveState();
+  fbWrite();
+  showStruggleNotice();
+  const swDiv = document.getElementById('currentStruggleWords');
+  if (swDiv) swDiv.textContent = 'None queued.';
+  showToast('Struggle words cleared.');
+}
+
+function clearData() {
+  if (confirm('Clear ALL student data? This cannot be undone.')) {
+    const name = state.studentName;
+    const fbCfg = loadFbConfig();
+    localStorage.removeItem('ww2_state');
+    state = defaultState();
+    state.studentName = name;
+    saveState();
+    fbWrite();
+    renderHeader();
+    renderHomeStats();
+    renderLeaderboard();
+    renderTeacherPanel();
+    renderBadges();
+    showToast('All data cleared.');
+  }
+}
+
+// ══════════════════════════════════════════════
+//  FIREBASE SYNC
+// ══════════════════════════════════════════════
+let fbApp = null;
+let fbDb  = null;
+let fbRef = null;
+let fbUnsubscribe = null;
+
+function loadFbConfig() {
+  try { return JSON.parse(localStorage.getItem('ww2_fbconfig') || 'null'); } catch(e){ return null; }
+}
+
+function saveFbConfig(cfg) {
+  localStorage.setItem('ww2_fbconfig', JSON.stringify(cfg));
+}
+
+async function saveFirebaseConfig() {
+  const apiKey    = document.getElementById('fbApiKey').value.trim();
+  const projectId = document.getElementById('fbProjectId').value.trim();
+  const dbUrl     = document.getElementById('fbDbUrl').value.trim();
+  if (!apiKey || !projectId || !dbUrl) { showToast('Please fill in all three Firebase fields.'); return; }
+  const cfg = { apiKey, projectId, databaseURL: dbUrl };
+  saveFbConfig(cfg);
+  await initFirebase(cfg);
+}
+
+function initFirebase(cfg) {
+  if (!cfg) return;
+  try {
+    setSyncStatus('connecting');
+
+    // Use Firebase compat SDK (loaded via script tag in <head>)
+    if (!window.firebase) {
+      setSyncStatus('error');
+      showToast('Firebase SDK not loaded. Check internet connection.');
+      return;
+    }
+
+    // Delete existing app if reconfiguring
+    if (firebase.apps.length) {
+      firebase.apps.forEach(app => app.delete());
+    }
+
+    fbApp = firebase.initializeApp(cfg);
+    fbDb  = firebase.database();
+    fbRef = fbDb.ref('wordwizard/state');
+
+    // Unsubscribe previous listener
+    if (fbUnsubscribe) { fbRef.off('value', fbUnsubscribe); fbUnsubscribe = null; }
+
+    // Listen for remote changes in real time
+    fbUnsubscribe = fbRef.on('value', (snapshot) => {
+      const remote = snapshot.val();
+      if (remote) {
+        const localTs  = state.sessions && state.sessions.length  ? Math.max(...state.sessions.map(s=>s.ts||0))         : 0;
+        const remoteTs = remote.sessions && remote.sessions.length ? Math.max(...remote.sessions.map(s=>s.ts||0)) : 0;
+        if (remoteTs > localTs) {
+          state = remote;
+          saveState();
+          renderHeader();
+          renderHomeStats();
+          renderLeaderboard();
+          renderBadges();
+          renderTeacherPanel();
+          showStruggleNotice();
+          document.getElementById('greetingTxt').textContent = greeting(state.studentName||'Alex');
+        }
+      }
+      setSyncStatus('connected');
+    }, (err) => {
+      console.error('Firebase error:', err);
+      setSyncStatus('error');
+    });
+
+    // Push current local state up immediately
+    fbWrite();
+    setSyncStatus('connected');
+    const fbSaved = document.getElementById('fbSaved');
+    if (fbSaved) { fbSaved.style.display = 'inline'; setTimeout(()=>fbSaved.style.display='none', 3000); }
+    showToast('☁️ Firebase connected! Syncing across devices.');
+
+  } catch(err) {
+    console.error('Firebase init error:', err);
+    setSyncStatus('error');
+    showToast('⚠️ Could not connect to Firebase. Check your config.');
+  }
+}
+
+function fbWrite() {
+  if (!fbRef) return;
+  try {
+    fbRef.set(JSON.parse(JSON.stringify(state)));
+  } catch(e) { console.warn('fbWrite failed:', e); }
+}
+
+function setSyncStatus(status) {
+  const el = document.getElementById('syncStatus');
+  if (!el) return;
+  if (status === 'connected') {
+    el.style.background = '#e8f5e9'; el.style.color = '#2E7D32';
+    el.textContent = '✅ Connected — syncing across devices in real time';
+  } else if (status === 'connecting') {
+    el.style.background = '#e3f2fd'; el.style.color = '#1565C0';
+    el.textContent = '⏳ Connecting to Firebase…';
+  } else if (status === 'error') {
+    el.style.background = '#ffebee'; el.style.color = '#B71C1C';
+    el.textContent = '❌ Connection failed — check your Firebase config';
+  } else {
+    el.style.background = '#fff3e0'; el.style.color = '#E65100';
+    el.textContent = '⚠️ Not connected — data is local only';
+  }
+}
+
+function disconnectFirebase() {
+  if (fbUnsubscribe && fbRef) { fbRef.off('value', fbUnsubscribe); }
+  if (fbApp) { try { fbApp.delete(); } catch(e){} }
+  fbApp = null; fbDb = null; fbRef = null; fbUnsubscribe = null;
+  localStorage.removeItem('ww2_fbconfig');
+  document.getElementById('fbApiKey').value = '';
+  document.getElementById('fbProjectId').value = '';
+  document.getElementById('fbDbUrl').value = '';
+  setSyncStatus('disconnected');
+  showToast('Disconnected from Firebase.');
+}
+
+// Pre-fill Firebase fields if config saved
+function prefillFbFields() {
+  const cfg = loadFbConfig();
+  if (!cfg) return;
+  if (document.getElementById('fbApiKey'))    document.getElementById('fbApiKey').value    = cfg.apiKey    || '';
+  if (document.getElementById('fbProjectId')) document.getElementById('fbProjectId').value = cfg.projectId || '';
+  if (document.getElementById('fbDbUrl'))     document.getElementById('fbDbUrl').value     = cfg.databaseURL|| '';
+}
+
+// ══════════════════════════════════════════════
+//  UTILITIES
+// ══════════════════════════════════════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(()=>t.classList.remove('show'), 3200);
+}
+
+function confetti() {
+  const cols = ['#FFD54F','#29B6F6','#AB47BC','#FF7043','#66BB6A','#EF5350','#fff'];
+  for (let i=0;i<70;i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.cssText = `left:${Math.random()*100}vw;top:-12px;background:${cols[Math.floor(Math.random()*cols.length)]};animation-delay:${Math.random()*1.8}s;transform:rotate(${Math.random()*360}deg)`;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(), 5000);
+  }
+}
+
+// Close popups on overlay click
+document.querySelectorAll('.popup-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+});
+
+// ══════════════════════════════════════════════
+//  BOOT
+// ══════════════════════════════════════════════
+init();
+</script>
+</body>
+</html>
